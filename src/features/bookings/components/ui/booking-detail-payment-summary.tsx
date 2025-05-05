@@ -53,7 +53,7 @@ const bookingDetailPaymentCardVariants = cva(
         variants: {
             color: {
                 default:
-                    "dark:border-zinc-500 dark:bg-zinc-700 dark:border-zinc-500 dark:bg-zinc-800",
+                    "border-zinc-500 bg-zinc-700 dark:border-zinc-500 dark:bg-zinc-800",
                 green: "border-green-500 bg-green-700 dark:border-green-500 dark:bg-green-800",
                 rose: "border-rose-500 bg-rose-700 dark:border-rose-500 dark:bg-rose-800",
                 indigo: "border-indigo-500 bg-indigo-700 dark:border-indigo-500 dark:bg-indigo-800",

@@ -240,6 +240,7 @@ export function BaseBookingForm<
                             <PopoverContent
                                 className="w-auto border-zinc-300 p-0 dark:border-zinc-700 dark:bg-zinc-925"
                                 align="center"
+                                inPortal={false}
                             >
                                 <Calendar
                                     initialFocus

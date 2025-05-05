@@ -26,28 +26,30 @@ const formSchema = z
         email: z.string().email(),
         password: z.string().min(8),
         passwordConfirmation: z.string().min(8),
-        avatar: z.array(
-            z
-                .instanceof(File)
-                .refine(
-                    file => file.size < 2_097_152,
-                    "Image size must be less than 2MB.",
-                )
-                .refine(
-                    file =>
-                        ["image/jpeg", "image/jpg", "image/webp"].includes(
-                            file.type,
-                        ),
-                    "File must be a jpeg, jpg, or webp image.",
-                ),
-        ),
+        avatar: z
+            .array(
+                z
+                    .instanceof(File)
+                    .refine(
+                        file => file.size < 2_097_152,
+                        "Image size must be less than 2MB.",
+                    )
+                    .refine(
+                        file =>
+                            ["image/jpeg", "image/jpg", "image/webp"].includes(
+                                file.type,
+                            ),
+                        "File must be a jpeg, jpg, or webp image.",
+                    ),
+            )
+            .optional(),
     })
     .refine(data => data.password === data.passwordConfirmation, {
         message: "Passwords do not match",
         path: ["passwordConfirmation"],
     })
-    .refine(data => data.avatar.length === 1, {
-        message: "One avatar image is required.",
+    .refine(data => !data.avatar || data.avatar.length === 1, {
+        message: "If provided, only one avatar image is allowed.",
         path: ["avatar"],
     });
 
@@ -69,7 +71,7 @@ export function CreateUserForm({
             email: "",
             password: "",
             passwordConfirmation: "",
-            avatar: [],
+            avatar: undefined,
         },
     });
 

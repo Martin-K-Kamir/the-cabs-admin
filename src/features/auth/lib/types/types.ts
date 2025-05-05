@@ -13,7 +13,7 @@ export type NewUser = {
     name: string;
     email: string;
     password: string;
-    avatar: File[];
+    avatar?: File[];
 };
 
 export type UpdateUser = Partial<

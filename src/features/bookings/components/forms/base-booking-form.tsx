@@ -44,6 +44,7 @@ export function BaseBookingForm<
     TForm extends UseFormReturn<z.infer<typeof bookingFormSchema>>,
 >({ form, isUpdateMode, fromDate }: BaseBookingFormProps<TForm>) {
     const [openSelectedCabinId, setOpenSelectedCabinId] = useState(false);
+    const [isOpenDatePicker, setIsOpenDatePicker] = useState(false);
 
     return (
         <>
@@ -209,10 +210,12 @@ export function BaseBookingForm<
                     <FormItem className="flex flex-col">
                         <FormLabel>Booking Dates</FormLabel>
                         <Popover
+                            open={isOpenDatePicker}
                             onOpenChange={isOpen => {
                                 if (!isOpen) {
                                     form.setValue("selectedDate", new Date());
                                 }
+                                setIsOpenDatePicker(isOpen);
                             }}
                         >
                             <PopoverTrigger asChild>

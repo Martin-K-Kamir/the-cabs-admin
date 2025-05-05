@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/command";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
+import { useMediaQuery } from "usehooks-ts";
 
 type BaseBookingFormProps<
     TForm extends UseFormReturn<z.infer<typeof bookingFormSchema>>,
@@ -45,6 +46,11 @@ export function BaseBookingForm<
 >({ form, isUpdateMode, fromDate }: BaseBookingFormProps<TForm>) {
     const [openSelectedCabinId, setOpenSelectedCabinId] = useState(false);
     const [isOpenDatePicker, setIsOpenDatePicker] = useState(false);
+
+    const isMd = useMediaQuery("(min-width: 48rem)", {
+        defaultValue: false,
+        initializeWithValue: false,
+    });
 
     return (
         <>
@@ -238,7 +244,7 @@ export function BaseBookingForm<
                                 </FormControl>
                             </PopoverTrigger>
                             <PopoverContent
-                                className="w-auto border-zinc-300 p-0 dark:border-zinc-700 dark:bg-zinc-925"
+                                className="w-(--radix-popover-trigger-width) border-zinc-300 p-0 md:w-auto dark:border-zinc-700 dark:bg-zinc-925"
                                 align="center"
                                 inPortal={false}
                             >
@@ -250,7 +256,7 @@ export function BaseBookingForm<
                                     onMonthChange={date =>
                                         form.setValue("selectedDate", date)
                                     }
-                                    numberOfMonths={2}
+                                    numberOfMonths={isMd ? 2 : 1}
                                     selected={{
                                         from: field.value.from,
                                         to: field.value.to,

@@ -358,6 +358,7 @@ function FormImageUploadPreview({
     const { setValue } = useFormContext();
     const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
     const [imagesOrder, setImagesOrder] = useState(files);
+    const isDraggable = files.length > 1;
 
     useEffect(() => {
         setImagesOrder(files);
@@ -368,6 +369,8 @@ function FormImageUploadPreview({
         index: number,
         image: File,
     ) {
+        if (!isDraggable) return;
+
         setDraggedIndex(index);
         event.dataTransfer.effectAllowed = "move";
         event.dataTransfer.items.add(image);
@@ -377,6 +380,7 @@ function FormImageUploadPreview({
         event: React.DragEvent<HTMLDivElement>,
         index: number,
     ) {
+        if (!isDraggable) return;
         event.preventDefault();
 
         if (draggedIndex === null || draggedIndex === index) return;
@@ -390,12 +394,14 @@ function FormImageUploadPreview({
     }
 
     function handleDrop() {
+        if (!isDraggable) return;
         setDraggedIndex(null);
         setFiles(imagesOrder);
         setValue(name, imagesOrder);
     }
 
     function handleDragEnd() {
+        if (!isDraggable) return;
         setDraggedIndex(null);
     }
 
@@ -422,6 +428,7 @@ function FormImageUploadPreview({
                     onDragEnd={handleDragEnd}
                     onDrop={handleDrop}
                     onRemoveFile={handleRemoveFile}
+                    isDraggable={isDraggable}
                 />
             ))}
         </div>
@@ -433,6 +440,7 @@ type FormImagePreviewItemProps = {
     draggedIndex: number | null;
     image: File;
     className?: string;
+    isDraggable?: boolean;
     onDragStart: (event: React.DragEvent<HTMLDivElement>) => void;
     onDragOver: (event: React.DragEvent<HTMLDivElement>) => void;
     onDragEnd: () => void;
@@ -444,6 +452,7 @@ function FormImagePreviewItem({
     image,
     index,
     draggedIndex,
+    isDraggable,
     className,
     onDragEnd,
     onDragOver,
@@ -464,7 +473,7 @@ function FormImagePreviewItem({
                 draggedIndex === index &&
                     "border-zinc-400 bg-zinc-100 dark:border-zinc-400 dark:bg-zinc-800",
             )}
-            draggable
+            draggable={isDraggable}
             onDragStart={onDragStart}
             onDragOver={onDragOver}
             onDragEnd={onDragEnd}
@@ -478,9 +487,12 @@ function FormImagePreviewItem({
                 }
                 alt={`Preview of ${image.name}`}
                 className={cn(
-                    "h-full w-full cursor-move rounded-md object-cover transition-[opacity,filter]",
+                    "h-full w-full rounded-md object-cover transition-[opacity,filter]",
                     draggedIndex === index && "opacity-0",
-                    draggedIndex === null && "hover:brightness-80",
+                    isDraggable &&
+                        draggedIndex === null &&
+                        "hover:brightness-80",
+                    isDraggable && "cursor-move",
                     className,
                 )}
                 classNameLoader={className}
@@ -494,7 +506,7 @@ function FormImagePreviewItem({
                     type="button"
                     size="icon"
                     className={cn(
-                        "absolute top-1.5 right-1.5 hidden size-6 rounded-full group-hover:flex hover:bg-zinc-200",
+                        "absolute top-1.5 right-1.5 size-6 rounded-full hover:bg-zinc-200 lg:hidden lg:group-hover:flex",
                         draggedIndex !== null && "opacity-0",
                     )}
                     onClick={() => onRemoveFile(image)}

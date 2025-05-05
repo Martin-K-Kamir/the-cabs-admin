@@ -26,31 +26,29 @@ const formSchema = z
         email: z.string().email(),
         password: z.string().min(8),
         passwordConfirmation: z.string().min(8),
-        avatar: z
-            .array(
-                z
-                    .instanceof(File)
-                    .refine(
-                        file => file.size < 2_097_152,
-                        "Image size must be less than 2MB.",
-                    )
-                    .refine(
-                        file =>
-                            ["image/jpeg", "image/jpg", "image/webp"].includes(
-                                file.type,
-                            ),
-                        "File must be a jpeg, jpg, or webp image.",
-                    ),
-            )
-            .optional(),
+        avatar: z.array(
+            z
+                .instanceof(File)
+                .refine(
+                    file => file.size < 2_097_152,
+                    "Image size must be less than 2MB.",
+                )
+                .refine(
+                    file =>
+                        ["image/jpeg", "image/jpg", "image/webp"].includes(
+                            file.type,
+                        ),
+                    "File must be a jpeg, jpg, or webp image.",
+                ),
+        ),
+    })
+    .refine(data => data.avatar.length === 0 || data.avatar.length === 1, {
+        message: "If provided, only one avatar image is allowed.",
+        path: ["avatar"],
     })
     .refine(data => data.password === data.passwordConfirmation, {
         message: "Passwords do not match",
         path: ["passwordConfirmation"],
-    })
-    .refine(data => !data.avatar || data.avatar.length === 1, {
-        message: "If provided, only one avatar image is allowed.",
-        path: ["avatar"],
     });
 
 export type CreateUserFormHandlers = GetMutationHandlers<
@@ -71,7 +69,7 @@ export function CreateUserForm({
             email: "",
             password: "",
             passwordConfirmation: "",
-            avatar: undefined,
+            avatar: [],
         },
     });
 
@@ -208,7 +206,7 @@ export function CreateUserForm({
                         type="reset"
                         variant="outline"
                         onClick={() => form.reset()}
-                        disabled={isPending}
+                        disabled={isPending || !form.formState.isDirty}
                     >
                         Reset
                     </Button>

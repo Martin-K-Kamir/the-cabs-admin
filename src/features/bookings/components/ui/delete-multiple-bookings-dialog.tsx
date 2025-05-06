@@ -18,7 +18,6 @@ import {
     useMultipleDeleteBookingMutation,
     type BookingColumnItem,
     type BookingId,
-    type GuestId,
 } from "@/features/bookings";
 
 const bookingColumns: ColumnDef<BookingColumnItem>[] = [

@@ -36,7 +36,7 @@ function Calendar({
             styles={{ cell: { minWidth: "32px" } }}
             className={cn("p-4", className)}
             classNames={{
-                months: "flex flex-col sm:flex-row gap-2",
+                months: "flex flex-col items-center justify-center md:items-start sm:flex-row gap-2",
                 month: "flex flex-col gap-4",
                 caption:
                     "flex justify-center pt-1 relative items-center w-full",

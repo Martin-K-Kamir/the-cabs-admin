@@ -68,11 +68,7 @@ const bookingColumns: ColumnDef<BookingColumnItem>[] = [
 export type DeleteMultipleBookingsDialogProps = {
     bookingData: BookingColumnItem[];
 } & React.ComponentProps<typeof AlertDialog> &
-    GetMutationHandlers<
-        "delete",
-        void,
-        { bookingIds: BookingId[]; guestIds: GuestId[] }
-    >;
+    GetMutationHandlers<"delete", void, { bookingIds: BookingId[] }>;
 
 export function DeleteMultipleBookingsDialog({
     bookingData,
@@ -89,20 +85,16 @@ export function DeleteMultipleBookingsDialog({
 
     function handleClick() {
         const bookingIds = bookingData.map(booking => booking.id);
-        const guestIds = bookingData.map(booking => booking.guests.id);
 
-        onDelete?.({ bookingIds, guestIds });
-        mutate(
-            { bookingIds, guestIds },
-            {
-                onSuccess: () => {
-                    onDeleteSuccess?.();
-                },
-                onError: error => {
-                    onDeleteError?.(error);
-                },
+        onDelete?.({ bookingIds });
+        mutate(bookingIds, {
+            onSuccess: () => {
+                onDeleteSuccess?.();
             },
-        );
+            onError: error => {
+                onDeleteError?.(error);
+            },
+        });
     }
 
     return (
